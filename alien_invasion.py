@@ -2,19 +2,21 @@ import sys
 
 import pygame
 
+from settings import Settings
+
 
 def run_game():
 
     pygame.init()
-    bg_color = (230,230,230)
-    screen = pygame.display.set_mode((1920, 1080))
+    ai_settings = Settings()
+    screen = pygame.display.set_mode((ai_settings.width, ai_settings.height))
     pygame.display.set_caption('Alien Invasion')
 
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
-        screen.fill(bg_color)
+        screen.fill(ai_settings.bg_color)
         pygame.display.flip()
 
 
