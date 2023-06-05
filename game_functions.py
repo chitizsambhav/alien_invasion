@@ -5,6 +5,7 @@ import pygame
 from settings import Settings
 from bullet import Bullet
 from alien import Alien
+from time import sleep
 
 screen_settings = Settings()
 
@@ -30,15 +31,36 @@ def change_fleet_direction(ai_settings, aliens):
     ai_settings.alien_fleet_direction *= -1
 
 
-def update_aliens(aliens, ai_settings):
+def update_aliens(aliens, ship, ai_settings, screen, bullets, stats):
     check_fleet_edges(ai_settings, aliens)
     aliens.update()
+    if pygame.sprite.spritecollideany(ship, aliens):
+        ship_hit(ai_settings, ship, screen, bullets, aliens, stats)
 
+    alien_bottom_check(ai_settings, ship, screen, bullets, aliens, stats)
+
+
+def alien_bottom_check(ai_settings, ship, screen, bullets, aliens, stats):
+    screen_rect = screen.get_rect()
+    for alien in aliens.sprites():
+        if alien.rect.bottom >= screen_rect.bottom:
+            ship_hit(ai_settings, ship, screen, bullets, aliens, stats)
+
+
+def ship_hit(ai_settings, ship, screen, bullets, aliens, stats):
+    if stats.ship_left > 0:
+        stats.ship_left -= 1
+        aliens.empty()
+        bullets.empty()
+        create_fleet(ai_settings, screen, aliens, ship)
+        ship.center_ship()
+        sleep(.5)
+    else:
+        stats.game_active = False
 
 def get_row_nos(alien_height, ship_height, ai_settings):
     available_space_y = (ai_settings.screen_height - (3 * alien_height) - ship_height)
     row_nos = int(available_space_y / (2 * alien_height))
-    print(row_nos)
     return row_nos
 
 
