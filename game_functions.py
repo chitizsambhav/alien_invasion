@@ -58,6 +58,7 @@ def ship_hit(ai_settings, ship, screen, bullets, aliens, stats):
     else:
         stats.game_active = False
 
+
 def get_row_nos(alien_height, ship_height, ai_settings):
     available_space_y = (ai_settings.screen_height - (3 * alien_height) - ship_height)
     row_nos = int(available_space_y / (2 * alien_height))
@@ -95,6 +96,16 @@ def check_key_down(event, ship, ai_settings, screen, bullets):
         fire_bullet(ai_settings, ship, screen, bullets)
 
 
+def check_play_button(stats, play_button, mouse_x, mouse_y, ai_settings, bullets, screen, aliens, ship):
+    if play_button.rect.collidepoint(mouse_x, mouse_y):
+        stats.reset_stats()
+        stats.game_active = True
+        aliens.empty()
+        bullets.empty()
+        create_fleet(ai_settings, screen, aliens, ship)
+        ship.center_ship()
+
+
 def fire_bullet(ai_settings, ship, screen, bullets):
     if len(bullets) < ai_settings.bullets_allowed:
         new_bullet = Bullet(ai_settings, ship, screen)
@@ -106,7 +117,7 @@ def check_key_up(ship):
     ship.moving_left = False
 
 
-def check_event(ai_settings, ship, screen, bullets):
+def check_event(ai_settings, ship, screen, bullets, stats, play_button, aliens):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
@@ -115,11 +126,17 @@ def check_event(ai_settings, ship, screen, bullets):
         elif event.type == pygame.KEYDOWN:
             check_key_down(event, ship, ai_settings, screen, bullets)
 
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            check_play_button(stats, play_button, mouse_x, mouse_y, ai_settings, bullets, screen, aliens, ship)
 
-def update_screen(ai_settings, ship, aliens, screen, bullets):
+
+def update_screen(ai_settings, ship, aliens, screen, bullets, play_button, stats):
     screen.fill(ai_settings.bg_color)
     ship.blitme()
     aliens.draw(screen)
+    if not stats.game_active:
+        play_button.draw_button()
     for bullet in bullets.sprites():
         bullet.draw_bullet()
     pygame.display.flip()
