@@ -2,11 +2,9 @@ class Settings():
 
     def __init__(self):
         self.bg_color = (230, 230, 230)
+        self.screen_width = 1536
+        self.screen_height = 864
         self.ship_speed_factor = 1.5
-<<<<<<< HEAD
-
-
-=======
         # Bullet Settings
         self.bullet_height = 15
         self.bullet_width = 3
@@ -17,4 +15,3 @@ class Settings():
         self.alien_fleet_drop = 200
         self.alien_fleet_direction = 1
         self.ship_limit = 2
->>>>>>> d6607e39d4a529ff6cccaf6dc54914cccdb40d9f
